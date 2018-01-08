@@ -1,6 +1,8 @@
 package datastructures.concrete.dictionaries;
 
+import datastructures.concrete.dictionaries.ArrayDictionary.Pair;
 import datastructures.interfaces.IDictionary;
+import misc.exceptions.NoSuchKeyException;
 import misc.exceptions.NotYetImplementedException;
 
 /**
@@ -12,11 +14,13 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
     private Pair<K, V>[] pairs;
 
     // You're encouraged to add extra fields (and helper methods) though!
-
+    private int size;
+    
     public ArrayDictionary() {
-        throw new UnsupportedOperationException();
+        this.pairs = makeArrayOfPairs(10);
+        this.size = 0;
     }
-
+    
     /**
      * This method will return a new, empty array of the given size
      * that can contain Pair<K, V> objects.
@@ -39,29 +43,66 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
 
     }
 
+    //need test
     @Override
     public V get(K key) {
-        throw new NotYetImplementedException();
+        int index = indexOfKey(key);
+        if(index == -1) {
+            throw new NoSuchKeyException();
+        }
+        return pairs[index].value;
     }
 
+    // need test
     @Override
     public void put(K key, V value) {
-        throw new NotYetImplementedException();
+        int index = indexOfKey(key);
+        if(index == -1) {
+            // add new key and value
+            Pair<K,V> newPair = new Pair<K, V>(key, value);
+            pairs[size] = newPair;
+            size++;
+        } else {
+            // replace value for existing key
+            pairs[index].value = value; 
+        }
     }
 
+    // need test
     @Override
     public V remove(K key) {
-        throw new NotYetImplementedException();
+        int index = indexOfKey(key);
+        if(index == -1) {
+            throw new NoSuchKeyException();
+        }
+        for (int i = index; i < size - 1; i++) {
+            pairs[i] = pairs[i + 1];
+         }
+         size--;
     }
-
+    
+    //need test
     @Override
     public boolean containsKey(K key) {
-        throw new NotYetImplementedException();
+        return indexOfKey(key) != -1;
+    }
+    
+    // Returns the index of the pair of given key in the pairs array
+    private int indexOfKey(K key) {
+        int index = 0;
+        for(int i = 0; i < size; i++) {
+            if (pairs[i].key.equals(key)) {
+                return index;
+            }
+            index++;
+        }
+        return -1;
     }
 
+  //need test
     @Override
     public int size() {
-        throw new NotYetImplementedException();
+        return size;
     }
 
     private static class Pair<K, V> {

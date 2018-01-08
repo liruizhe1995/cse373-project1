@@ -72,10 +72,13 @@ public class DoubleLinkedList<T> implements IList<T> {
     // in progress (need test)
     @Override
     public void insert(int index, T item) {
+        size++;
         checkIndexInBound(index);
-        if(index == size-1) {
+        if(index == size) {
             // end case
-            add(item);
+            back.next = new Node<T>(item);
+            back.next.prev = back;
+            back = back.next;
         } else if(index == 0){
             // front case
             Node<T> temp = new Node<T>(item);
@@ -91,7 +94,6 @@ public class DoubleLinkedList<T> implements IList<T> {
             current.prev=temp;
             temp.next=current;
         }
-        size++;
     }
   
     // in progress (need test)
@@ -149,7 +151,7 @@ public class DoubleLinkedList<T> implements IList<T> {
         }
     }
     
- // Returns a reference to the node object representing the index'th element
+    // Returns a reference to the node object representing the index'th element
     // in the list.  Used as a helper by many of the public methods.
     private Node<T> goTo(int index) {
         Node<T> current = front;
@@ -196,14 +198,16 @@ public class DoubleLinkedList<T> implements IList<T> {
             this.current = current;
         }
 
+        // in progress
         /**
          * Returns 'true' if the iterator still has elements to look at;
          * returns 'false' otherwise.
          */
         public boolean hasNext() {
-            throw new NotYetImplementedException();
+            return current.next != null;
         }
-
+        
+        // in progress
         /**
          * Returns the next item in the iteration and internally updates the
          * iterator to advance one element forward.
@@ -212,7 +216,11 @@ public class DoubleLinkedList<T> implements IList<T> {
          *         there are no more elements to look at.
          */
         public T next() {
-            throw new NotYetImplementedException();
+            if(current.next == null) {
+                throw new NoSuchElementException();
+            }
+            current = current.next;
+            return current.data;
         }
     }
 }
